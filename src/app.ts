@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
-import { connectDB } from './db/connection';
+import { connectDB } from './db/connection'; 
 import { requestLogger, errorHandler } from './common/logger';
 import syncRoutes      from './sync/sync.routes';
 import inventoryRoutes from './inventory/inventory.routes';
@@ -11,7 +11,7 @@ export const app = express();
 app.use(express.json());
 app.use(requestLogger);
 
-app.use('/api/sync',      syncRoutes);
+app.use('/api/sync',      syncRoutes); 
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/payments',  paymentsRoutes);
 
