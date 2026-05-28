@@ -77,9 +77,9 @@ Same contract as the NestJS version — all routes are under `/api/`:
 | GET  | `/api/payments/:tid/:pid/events` | Audit log |
 | POST | `/api/payments/:tenantId/reconcile` | Reconciliation |
 
-## NestJS vs Express — key differences
+## Express — key differences
 
-| Concern | NestJS | Express |
+| Concern | Express |
 |---|---|---|
 | DI / wiring | IoC container, `@Injectable()` | `new Service()` in route file |
 | Model access | `@InjectModel(X.name)` | Direct `mongoose.model()` import |
@@ -89,3 +89,17 @@ Same contract as the NestJS version — all routes are under `/api/`:
 | Middleware | `configure(consumer)` in AppModule | `app.use()` |
 | Error handling | Exception filters | `errorHandler` middleware |
 | Business logic | Identical | Identical |
+
+
+
+Assumptions & Tradeoffs
+
+No auth middleware — the assessment focuses on backend logic; authentication is omitted intentionally
+Mock payment provider — no live API keys needed; the provider is a local stub with configurable failure scenarios
+LWW over CRDT — simpler and appropriate for a prototype; a production sync engine would benefit from a proper CRDT for inventory counters
+Manual validation — no validation library (like Zod or class-validator) is added to keep the surface area focused on the three core tasks
+
+
+One Thing I'd Improve
+
+The sync engine's conflict detection is per-item and stateless — it only looks at the current batch in isolation. Given more time, I'd build a proper vector clock per inventory item so the server can track causality across multiple clients and multiple batches, not just detect conflicts at submission time. This would make the system correct under partition scenarios rather than just tolerant of them.
